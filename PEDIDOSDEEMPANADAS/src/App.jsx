@@ -1,35 +1,70 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
 
-function App() {
-  const [count, setCount] = useState(0)
+
+function Formulario({ agregarDatosEmpleado }) {
+  const [newEmpleado, setNewEmpleado] = useState({
+    nombre_del_empleado: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewEmpleado({
+      ...newEmpleado,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validarFormulario()) return;
+    agregarDatosEmpleado(newEmpleado);
+    setNewEmpleado({
+      nombre_del_empleado: '',
+    });
+  };
+
+  const validarFormulario = () => {
+    const { nombre_del_empleado } = newEmpleado;
+    if (nombre_del_empleado.trim() === '') {
+      alert('Todos los campos son obligatorios de completar');
+      return false;
+    }
+    return true;
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <form onSubmit={handleSubmit}>
+      <label>Nombre Del empleado</label>
+      <input
+        type="text"
+        name="nombre_del_empleado"
+        className="u-full-width"
+        placeholder="Nombre del empleado"
+        value={newEmpleado.nombre_del_empleado}
+        onChange={handleChange}
+      />
+      <button type="submit" className="u-full-width button-primary">
+        Agregar Pedido
+      </button>
+    </form>
+  );
 }
 
-export default App
+function App() {
+  const [empleados, setEmpleados] = useState([]);
+
+  const agregarDatosEmpleado = (empleado) => {
+    setEmpleados([...empleados, empleado]);
+    console.log("Empleado agregado:", empleado);
+  };
+
+  return (
+    <div className="App">
+      <Formulario agregarDatosEmpleado={agregarDatosEmpleado} />
+      {/* Puedes mostrar la lista de empleados aquí si quieres */}
+    </div>
+  );
+}
+
+export default App;
